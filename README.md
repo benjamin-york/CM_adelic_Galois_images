@@ -1,4 +1,4 @@
-# CM_adelic_Galois_images
+# CM Adelic Galois Images
 
 This repository contains `Magma` code implementing an algorithm to compute the adelic Galois image of an elliptic curve $E/\mathbb{Q}$ with CM and $j(E) \neq 0, 1728$. This algorithm is an implementation of Algorithm 8.4 in the paper [*The Image of the Adelic Galois Representation of an Elliptic Curve with Complex Multiplication*] by Àlvaro Lozano-Robledo and Benjamin York.
 
