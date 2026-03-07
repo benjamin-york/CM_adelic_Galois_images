@@ -6,5 +6,5 @@ The main function is `GL2CMAdelicImage()` which takes as input an elliptic curve
 
 We also implement the function `GL2CMImageModN()` which takes as input an elliptic curve $E/\mathbb{Q}$ with CM and $j(E) \neq 0, 1728$ and a positive integer $N > 1$, and outputs the Galois image of $E$ modulo $N$.
 
-To test our code, we ran the function `GL2CMAdelicImage()` on all CM elliptic curve over defined over $\mathbb{Q}$ with conductors $\leq 100000$ (this data set was taken from the [LMFDB](https://www.lmfdb.org/EllipticCurve/Q/) and consisted of 420 curves). The computation was performed on an HP EliteBook 840 G3 with an IntelCore i7-6600U processor and 16GB of RAM, which computed the images in about 30 minutes.
+To test the speed our code, we ran the function `GL2CMAdelicImage()` on all CM elliptic curves defined over $\mathbb{Q}$ with conductors $\leq 100000$ (this data set was taken from the [LMFDB](https://www.lmfdb.org/EllipticCurve/Q/) and consisted of 420 curves). The computation was performed on an HP EliteBook with an IntelCore i7-6600U processor and 16GB of RAM, which computed the images in about 30 minutes.
 
