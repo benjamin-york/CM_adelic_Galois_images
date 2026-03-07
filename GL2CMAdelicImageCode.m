@@ -454,7 +454,7 @@ GL2CMEllAdicImageFast := function(E, ell)
                     ccmat := C1(dfvec);
                 end if;
             else
-                G := Nell; //ell adic image always maximal all other cases
+                G := Nell; //ell-adic image always maximal in all other cases
                 CG := Cell;
                 ccmat := C1(dfvec);
             end if;
