@@ -12,10 +12,12 @@
 
 ///////////////////////////////////
 
-//A list of all simplest CM curves defined over Q
+//A list of all Simplest CM curves defined over Q
 //implimented as a function for easier access
 SIMPLESTCMCURVESOVERQ := function(dfvec)
-    if [-3, 1] eq dfvec then
+	if [] eq dfvec then
+		print("This is not a CM elliptic curve");
+    elif [-3, 1] eq dfvec then
         SC := [[0, -432], [0, 16], [0, -48], [0, 1296], [0, -3888], [0, 144]];
     elif [-3, 2] eq dfvec then 
         SC := [[-135, -594], [-15, 22]];
@@ -336,6 +338,14 @@ end function;
 //////////////////////////////////////////////////////////////////////////////
 
 
+//Takes as input a Cartan subgroup Cell and a subgroup CG of Cell
+//and returns the image of CG with a reduced number of generators
+//without intervention, CG may sometimes have thousands of generators
+CGR := function(Cell, CG)
+	A_ell, mappytoA_ell := AbelianGroup(Cell);
+    AG := mappytoA_ell(CG);
+    return AG @@ mappytoA_ell; //this simplifies generators for CG
+end function;
 
 //Given a CM elliptic curve E/Q with j not 0, 1728 and prime ell
 //Returns the ell-adic image of E at level ell if ell ne 2 or 16 if ell eq 2
@@ -405,10 +415,12 @@ GL2CMEllAdicImageFast := function(E, ell)
             if dfvec eq [-3, 2] or dfvec eq [-3, 3] then
                 if IsIsomorphic(E,EllipticCurve(Coeffs[1])) then
                     CG := sub<Cell | G21DPList(dfvec, ell)>;
+					CG := CGR(Cell, CG);
                     ccmat := Cm1(dfvec);
                     G := sub<Nell | CG, ccmat>;
                 elif IsIsomorphic(E,EllipticCurve(Coeffs[2])) then
                     CG := sub<Cell | G21DPList(dfvec, ell)>;
+					CG := CGR(Cell, CG);
                     ccmat := C1(dfvec);
                     G := sub<Nell | CG, ccmat>;
                 else
@@ -428,10 +440,12 @@ GL2CMEllAdicImageFast := function(E, ell)
             if dfvec eq [-7, 1] or dfvec eq [-7, 2] then
                 if IsIsomorphic(E,EllipticCurve(Coeffs[1])) then
                     CG := sub<Cell | G21DPList(dfvec, ell)>;
+					CG := CGR(Cell, CG);
                     ccmat := C1(dfvec);
                     G := sub<Nell | CG, ccmat>;
                 elif IsIsomorphic(E,EllipticCurve(Coeffs[2])) then
                     CG := sub<Cell | G21DPList(dfvec, ell)>;
+					CG := CGR(Cell, CG);
                     ccmat := Cm1(dfvec);
                     G := sub<Nell | CG, ccmat>;
                 else
@@ -440,7 +454,7 @@ GL2CMEllAdicImageFast := function(E, ell)
                     ccmat := C1(dfvec);
                 end if;
             else
-                G := Nell; //ell adic image always maximal in all other cases
+                G := Nell; //ell adic image always maximal all other cases
                 CG := Cell;
                 ccmat := C1(dfvec);
             end if;
@@ -449,10 +463,12 @@ GL2CMEllAdicImageFast := function(E, ell)
             if dfvec in [[-11, 1], [-19, 1], [-43, 1], [-67, 1], [-163, 1]] then
                 if IsIsomorphic(E,EllipticCurve(Coeffs[1])) then
                     CG := sub<Cell | G21DPList(dfvec, ell)>;
+					CG := CGR(Cell, CG);
                     ccmat := Cm1(dfvec);
                     G := sub<Nell | CG, ccmat>;
                 elif IsIsomorphic(E,EllipticCurve(Coeffs[2])) then
                     CG := sub<Cell | G21DPList(dfvec, ell)>;
+					CG := CGR(Cell, CG);
                     ccmat := C1(dfvec);
                     G := sub<Nell | CG, ccmat>;
                 else
@@ -473,6 +489,7 @@ GL2CMEllAdicImageFast := function(E, ell)
     end if;
     return G, CG, ccmat;
 end function;
+
 
 
 //Given a square-free integer N,
@@ -546,31 +563,35 @@ SimplestCMCurveV2 := function(E)
 	Coeffs := Coefficients(E);
 	A := Integers()!Coeffs[4];
 	B := Integers()!Coeffs[5];
-		
-	TwistsToTest := #SimplestCurves;
-	i := 1;
-	twistfinding := true;
 
-	while i le TwistsToTest and twistfinding do
-		Ai := Integers()!SimplestCurves[i][1];
-		Bi := Integers()!SimplestCurves[i][2];
-		TwistFactorInitial := (B/Bi)/(A/Ai);
-		if TwistFactorInitial in Integers() then
-			TwistFactor := Integers()!TwistFactorInitial;
-		else
-			TwistFactor := Integers()!(TwistFactorInitial * Denominator(TwistFactorInitial)^2);
-		end if;
+	if A*B eq 0 then
+		print("We do not currently support curves with j-invariant 0 or 1728");
+	else
+		TwistsToTest := #SimplestCurves;
+		i := 1;
+		twistfinding := true;
 
-		if GCD(ell, Ndagger(TwistFactor)) eq 1 then
-			Enew := EllipticCurve([Ai, Bi]);
-			twistfinding := false;
-		else
-			i +:= 1;
+		while i le TwistsToTest and twistfinding do
+			Ai := Integers()!SimplestCurves[i][1];
+			Bi := Integers()!SimplestCurves[i][2];
+			TwistFactorInitial := (B/Bi)/(A/Ai);
+			if TwistFactorInitial in Integers() then
+				TwistFactor := Integers()!TwistFactorInitial;
+			else
+				TwistFactor := Integers()!(TwistFactorInitial * Denominator(TwistFactorInitial)^2);
+			end if;
+
+			if GCD(ell, Ndagger(TwistFactor)) eq 1 then
+				Enew := EllipticCurve([Ai, Bi]);
+				twistfinding := false;
+			else
+				i +:= 1;
+			end if;
+		end while;
+		testbool := IsIsomorphic(E, QuadraticTwist(Enew, TwistFactor));
+		if not testbool then
+			print("Something has gone wrong with SimplestCMCurveV2");
 		end if;
-	end while;
-	testbool := IsIsomorphic(E, QuadraticTwist(Enew, TwistFactor));
-	if not testbool then
-		print("Something has gone wrong with SimplestCMCurveV2");
 	end if;
 	return MinimalModel(Enew), TwistFactor;
 end function;
@@ -603,11 +624,7 @@ QuadraticTwistCartanImage := function(E,dfvec,ell,N)
 		N_ell1, C_ell1 := GL2CMEllAdicImageFast(E,ell);
         C_ell1 := ChangeRing(C_ell1, Integers(ell)); //returns image at level ell
 	end if;
-
-    A_ell, mappytoA_ell := AbelianGroup(C_ell);
-    A_ell1 := mappytoA_ell(C_ell1);
-    C_ell1 := A_ell1 @@ mappytoA_ell; //this simplifies generators for C_ell1;
-
+	
 	C_M1 := CartanSubgroupModNThatFixes(dfvec,N,M);
 	G_ell1xG_M := CRTSubgroupLift(dfvec,C_ell1,C_M);
 	G_ellxG_M1 := CRTSubgroupLift(dfvec,C_ell,C_M1);
