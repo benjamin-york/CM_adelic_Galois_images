@@ -169,4 +169,5 @@ G := GL2CMAdelicImage(E);
 
 //Our code also doesn't support the images of non-CM curves (for obvious reasons)
 E := EllipticCurve([1, 1]); //non-CM curve with j-invariant 6912/31
+
 G := GL2CMAdelicImage(E);
