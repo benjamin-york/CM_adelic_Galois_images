@@ -1,6 +1,11 @@
 ///////////////////////////////////
 
 //README: This code assumes the user already has access to the ell-adic-galois-images code from Andrew Sutherland for CM elliptic curves.
+//The appropriate repository can be found here https://github.com/AndrewVSutherland/ell-adic-galois-images
+//and the appropriate code can be loaded using the commands
+//	Attach("gl2.m");
+//	load "gl2data.m";
+
 //This code is an implementation of Algorithm 8.4 of our paper which takes as input a CM elliptic curve E/Q with j(E) not 0 or 1728
 //and returns the Galois image of E at an adelic level of definition
 
